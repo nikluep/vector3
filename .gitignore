@@ -13,3 +13,5 @@
 # more vs
 *.vcxproj
 *.vcxproj.*
+
+.vs
