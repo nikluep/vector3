@@ -1,32 +1,15 @@
-# Prerequisites
-*.d
+# target folders
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+[Dd]ebug
+[Rr]elease
 
-# Precompiled Headers
-*.gch
-*.pch
+*/[Dd]ebug
+*/[Rr]elease
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
 
-# Fortran module files
-*.mod
-*.smod
+# Solution
+*.sln
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# more vs
+*.vcxproj
+*.vcxproj.*
