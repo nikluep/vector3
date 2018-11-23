@@ -1,108 +1,126 @@
 #pragma once
 #include <stdint.h>
 #include <ostream>
+#define Vector_t Vector<T, size>
 
-
-
-
-template <class T> 
-class Vector3
+template <typename T, uint16_t size> 
+class Vector
 {
 public:
-	Vector3();
-	Vector3(T x, T y, T z);
-	~Vector3();
+
+	Vector();
+	Vector(const Vector_t& other);
+	~Vector();
 
 	// operators
-	Vector3<T>& operator=(const Vector3<T>& other);
+	Vector_t& operator=(const Vector_t& other);
 	T& operator[](size_t index);
 	const T& operator[](size_t index) const;
 
-	Vector3<T>& operator+=(const Vector3<T>& other);
-	Vector3<T>& operator-=(const Vector3<T>& other);
-	Vector3<T>& operator*=(const Vector3<T>& other);
-	Vector3<T>& operator/=(const Vector3<T>& other);
+	Vector_t& operator+=(const Vector_t& other);
+	Vector_t& operator-=(const Vector_t& other);
+	Vector_t& operator*=(const Vector_t& other);
+	Vector_t& operator/=(const Vector_t& other);
 
+	// enable iteration
+	T* begin();
+	T* end();
+	const T* begin() const;
+	const T* end() const;
 
 	// functions
 	T sum() const;
 	T length_squared() const;
 	float length() const;
 
-	static T dot(const Vector3<T>& rhs, const Vector3<T>& lhs);
-	T dot(const Vector3<T>& other) const;
+	T dot(const Vector_t& other);
+	Vector_t& cross(const Vector_t& other);
 
-	static Vector3<T> cross(const Vector3<T>& rhs, const Vector3<T>& lhs);
-	Vector3<T> cross(const Vector3<T>& other) const;
 
-	T x;
-	T y;
-	T z;
+	const size_t m_size;
+
+protected:
+	T* m_vector;
 };
 
-typedef Vector3<float> Vector3f;
-typedef Vector3<int32_t> Vector3i;
-typedef Vector3<uint32_t> Vector3u;
+
+typedef Vector<float, 3> Vector3f;
+typedef Vector<int32_t, 3> Vector3i;
+typedef Vector<uint32_t, 3> Vector3u;
+typedef Vector<uint8_t, 4> Color;
 
 
 
-template<class T>
-inline bool operator==(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+inline bool operator==(const Vector_t& lhs, const Vector_t& rhs)
 {
-	return 
-		lhs[0] == rhs[0] &&
-		lhs[1] == rhs[1] &&
-		lhs[2] == rhs[2];
+	for (auto i = 0; i < size; i++) {
+		if (lhs[i] != rhs[i]) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
-template<class T>
-inline bool operator!=(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+inline bool operator!=(const Vector_t& lhs, const Vector_t& rhs)
 {
 	return !(lhs == rhs);
 }
 
 
 
-template<class T>
-inline Vector3<T> operator+(const Vector3<T>& lhs, const Vector3<T>& rhs) 
+template<typename T, uint16_t size>
+inline Vector_t operator+(const Vector_t& lhs, const Vector_t& rhs) 
 {
-	return Vector3<T>(
-		lhs.x + rhs.x,
-		lhs.y + rhs.y,
-		lhs.z + rhs.z);
+	auto result = Vector_t(lhs);
+	result += rhs;
+
+	return result;
 }
 
-template<class T>
-inline Vector3<T> operator-(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+inline Vector_t operator-(const Vector_t& lhs, const Vector_t& rhs)
 {
-	return Vector3<T>(
-		lhs.x - rhs.x,
-		lhs.y - rhs.y,
-		lhs.z - rhs.z);
+	auto result = Vector_t(lhs);
+	result -= rhs;
+
+	return result;
 }
 
-template<class T>
-inline Vector3<T> operator*(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+inline Vector_t operator*(const Vector_t& lhs, const Vector_t& rhs)
 {
-	return Vector3<T>(
-		lhs.x * rhs.x,
-		lhs.y * rhs.y,
-		lhs.z * rhs.z);
+	auto result = Vector_t(lhs);
+	result *= rhs;
+
+	return result;
 }
 
-template<class T>
-inline Vector3<T> operator/(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+inline Vector_t operator/(const Vector_t& lhs, const Vector_t& rhs)
 {
-	return Vector3<T>(
-		lhs.x / rhs.x,
-		lhs.y / rhs.y,
-		lhs.z / rhs.z);
+	auto result = Vector_t(lhs);
+	result /= rhs;
+
+	return result;
 }
 
 
-template<class T>
-std::ostream & operator<< (std::ostream &out, Vector3<T>& vector)
+template<typename T, uint16_t size>
+std::ostream & operator<< (std::ostream &out, Vector_t& vector)
 {
-	out << "X: " << vector.x << " Y: " << vector.y << " Z: " << vector.z;
+	if (sizeof(T) == 1) {
+		for (const auto t : vector) {
+			out << (int)t << " ";
+		}
+	} else {
+
+		for (const auto t : vector) {
+			out << t << " ";
+		}
+	}
 	return out;
 }
+

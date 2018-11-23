@@ -8,154 +8,164 @@
 
 
 
-template<class T>
-Vector3<T>::Vector3()
-	: Vector3((T)0, (T)0, (T)0)
+template<typename T, uint16_t size>
+Vector<T, size>::Vector()
+	: m_size(size)
 {
+	m_vector = new T[m_size];
+	ZeroMemory(m_vector, m_size * sizeof(T));
 }
 
-template<class T>
-Vector3<T>::Vector3(T x, T y, T z)
+template<typename T, uint16_t size>
+Vector<T, size>::Vector(const Vector_t & other)
+	: m_size(size)
 {
-	this->x = x;
-	this->y = y;
-	this->z = z;
+	m_vector = new T[m_size];
+	memcpy_s(m_vector, m_size, other.m_vector, other.m_size);
 }
 
-template<class T>
-Vector3<T>::~Vector3()
+template<typename T, uint16_t size>
+Vector<T, size>::~Vector()
 {
+	delete m_vector;
 }
 
 
-template<class T>
-Vector3<T>& Vector3<T>::operator=(const Vector3<T>& other)
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::operator=(const Vector_t& other)
 {
 	if (this != &other) {
-		this->x = other.x;
-		this->y = other.y;
-		this->z = other.z;
+		for (auto i = 0; i < size; i++) {
+			m_vector[i] = other[i];
+		}
 	}
 	return *this;
 }
 
-template<class T>
-T & Vector3<T>::operator[](size_t index)
+template<typename T, uint16_t size>
+T & Vector<T, size>::operator[](size_t index)
 {
-	switch (index) {
-	case 0:
-		return this->x;
-	case 1:
-		return this->y;
-	case 2:
-		return this->z;
-	default:
-		throw std::out_of_range("Index out of bounds!");
+	return m_vector[index];
+}
+
+template<typename T, uint16_t size>
+const T & Vector<T, size>::operator[](size_t index) const
+{
+	return m_vector[index];
+}
+
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::operator+=(const Vector_t& other)
+{
+	for (auto i = 0; i < size; i++) {
+		m_vector[i] += other[i];
 	}
+
+	return *this;
 }
 
-template<class T>
-const T & Vector3<T>::operator[](size_t index) const
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::operator-=(const Vector_t& other)
 {
-	switch (index) {
-	case 0:
-		return this->x;
-	case 1:
-		return this->y;
-	case 2:
-		return this->z;
-	default:
-		throw std::out_of_range("Index out of bounds!");
+	for (auto i = 0; i < size; i++) {
+		m_vector[i] -= other[i];
 	}
-}
-
-template<class T>
-Vector3<T>& Vector3<T>::operator+=(const Vector3<T>& other)
-{
-	this->x += other.x;
-	this->y += other.y;
-	this->z += other.z;
 
 	return *this;
 }
 
-template<class T>
-Vector3<T>& Vector3<T>::operator-=(const Vector3<T>& other)
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::operator*=(const Vector_t& other)
 {
-
-	this->x -= other.x;
-	this->y -= other.y;
-	this->z -= other.z;
+	for (auto i = 0; i < size; i++) {
+		m_vector[i] *= other[i];
+	}
 
 	return *this;
 }
 
-template<class T>
-Vector3<T>& Vector3<T>::operator*=(const Vector3<T>& other)
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::operator/=(const Vector_t& other)
 {
-
-	this->x *= other.x;
-	this->y *= other.y;
-	this->z *= other.z;
+	for (auto i = 0; i < size; i++) {
+		m_vector[i] /= other[i];
+	}
 
 	return *this;
 }
 
-template<class T>
-Vector3<T>& Vector3<T>::operator/=(const Vector3<T>& other)
+template<typename T, uint16_t size>
+T * Vector<T, size>::begin()
 {
-
-	this->x /= other.x;
-	this->y /= other.y;
-	this->z /= other.z;
-
-	return *this;
+	return m_vector;
 }
 
-template<class T>
-T Vector3<T>::sum() const
+template<typename T, uint16_t size>
+T * Vector<T, size>::end()
 {
-	return this->x + this->y + this->z;
+	return m_vector + m_size;
 }
 
-template<class T>
-T Vector3<T>::length_squared() const
+template<typename T, uint16_t size>
+const T * Vector<T, size>::begin() const
 {
-	return this->x * this->x + this->y * this->y + this->z * this->z;
+	return m_vector;
 }
 
-template<class T>
-float Vector3<T>::length() const
+template<typename T, uint16_t size>
+const T * Vector<T, size>::end() const
+{
+	return m_vector + m_size;
+}
+
+template<typename T, uint16_t size>
+T Vector<T, size>::sum() const
+{
+	auto sum = (T)0;
+	for (const auto t : *this) {
+		sum += t;
+	}
+
+	return sum;
+}
+
+template<typename T, uint16_t size>
+T Vector<T, size>::length_squared() const
+{
+	auto length = (T)0;
+	for (const auto t : *this) {
+		length += t * t;
+	}
+
+	return length;
+}
+
+template<typename T, uint16_t size>
+float Vector<T, size>::length() const
 {
 	return sqrtf((float)(this->length_squared()));
 }
 
-template<class T>
-T Vector3<T>::dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
+template<typename T, uint16_t size>
+T Vector<T, size>::dot(const Vector_t& other)
 {
-	return (lhs * rhs).sum();
+	return (*this * other).sum();
 }
 
-template<class T>
-T Vector3<T>::dot(const Vector3<T>& other) const
+template<typename T, uint16_t size>
+Vector_t& Vector<T, size>::cross(const Vector_t& other)
 {
-	return Vector3::dot(*this, other);
-}
+	for (auto i = 0; i < size - 1; i++) {
+		(*this)[i] *= other[i + 1];
+	}
+	(*this)[size - 1] *= other[0];
 
-template<class T>
-Vector3<T> Vector3<T>::cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
-{
-	return Vector3(lhs.x * rhs.y, lhs.y * rhs.z, lhs.z * rhs.x);
-}
-
-template<class T>
-Vector3<T> Vector3<T>::cross(const Vector3<T>& other) const
-{
-	return Vector3::cross(*this, other);
+	return *this;
 }
 
 
 // Specializations
-template class Vector3<float>;
-template class Vector3<int32_t>;
-template class Vector3<uint32_t>;
+template class Vector<float, 3>;
+template class Vector<int32_t, 3>;
+template class Vector<uint32_t, 3>;
+template class Vector<uint8_t, 4>;
