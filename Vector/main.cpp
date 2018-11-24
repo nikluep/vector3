@@ -10,7 +10,11 @@ void init(Vector_t& vec) {
 	}
 }
 
+
+// please dont look here
 int main() {
+
+
 	Vector3f f1, f2;
 	Vector3i i1, i2;
 	Vector3u u1, u2;
@@ -90,6 +94,7 @@ int main() {
 	i1 = i1.cross(i2);
 	u1 = u1.cross(u2);
 	c1 = c1.cross(c2);
+
 	std::cout << f1 << " // " << f2 << std::endl;
 	std::cout << i1 << " // " << i2 << std::endl;
 	std::cout << u1 << " // " << u2 << std::endl;
@@ -102,6 +107,29 @@ int main() {
 	std::cout << (u1 != u2) << std::endl;
 	std::cout << (c1 != c2) << std::endl << std::endl;
 
+	std::cout << "Assignment:" << std::endl;
+	f1 = f2;
+	i1 = i2;
+	u1 = u2;
+	c1 = c2;
+
+	std::cout << f1 << " // " << f2 << std::endl;
+	std::cout << i1 << " // " << i2 << std::endl;
+	std::cout << u1 << " // " << u2 << std::endl;
+	std::cout << c1 << " // " << c2 << std::endl << std::endl;
+
+
+
+	std::cout << "Specialization:" << std::endl;
+	f1.x = f2.z;
+	i1.y = i2.x;
+	u1.z = u2.y;
+	c1.b = c2.a;
+
+	std::cout << f1 << " // " << f2 << std::endl;
+	std::cout << i1 << " // " << i2 << std::endl;
+	std::cout << u1 << " // " << u2 << std::endl;
+	std::cout << c1 << " // " << c2 << std::endl << std::endl;
 
 
 	std::cin.get();
