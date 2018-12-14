@@ -10,21 +10,26 @@ class Vector
 public:
 
 	Vector();
-	Vector(const Vector_t& other);
-	Vector(const T* data);
-	~Vector();
+	Vector(const T& value);
+	Vector(const T data[size]);
 
-	// operators
+	// copy instruction / constructor
+	Vector(const Vector_t& other);
 	Vector_t& operator=(const Vector_t& other);
+
+	// access operators
 	T& operator[](size_t index);
 	const T& operator[](size_t index) const;
+	operator T*();
+	operator const T*() const;
 
+	// arythmetic operators
 	Vector_t& operator+=(const Vector_t& other);
 	Vector_t& operator-=(const Vector_t& other);
 	Vector_t& operator*=(const Vector_t& other);
 	Vector_t& operator/=(const Vector_t& other);
 
-	// enable iteration
+	// iteration utils
 	T* begin();
 	T* end();
 	const T* begin() const;
@@ -40,12 +45,10 @@ public:
 
 	// other accessors
 	const T* getData() const;
-	void setData(const T* data, size_t size);
-
-	const uint16_t m_size;
+	uint16_t getSize() const;
 
 protected:
-	T* m_data;
+	T m_data[size];
 };
 
 /*
@@ -57,10 +60,16 @@ class Vector3 : public Vector<T, 3u>
 public:
 	Vector3();
 	Vector3(const Vector<T, 3u>& other);
+	Vector3(const T& value);
+	Vector3(const T data[3u]);
+	Vector3(T& x, T& y, T& z);
+
 
 	// operators
 	Vector3& operator=(const Vector<T, 3u>& other);
 	Vector3& operator=(const Vector3& other);
+	Vector3& operator=(const T& value);
+	Vector3& operator=(const T data[3u]);
 
 	T& x;
 	T& y;
@@ -71,20 +80,36 @@ public:
 /*
 Special class for length 3
 */
+#define DEF_COLOR(name, r, g, b) static Color name##() {\
+									return Color(r, g, b, 255);\
+								}
+
+
 class Color : public Vector<uint8_t, 4u>
 {
 public:
 	Color();
+	Color(const uint8_t& value);
+	Color(const uint8_t data[4u]);
 	Color(const Vector<uint8_t, 4u>& other);
+	Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 	// operators
 	Color& operator=(const Vector<uint8_t, 4u>& other);
 	Color& operator=(const Color& other);
+	Color& operator=(const uint8_t& value);
+	Color& operator=(const uint8_t data[4u]);
 
 	uint8_t& r;
 	uint8_t& g;
 	uint8_t& b;
 	uint8_t& a;
+
+	DEF_COLOR(Black, 0, 0, 0);
+	DEF_COLOR(DarkGray, 40, 40, 40);
+	DEF_COLOR(Gray, 128, 128, 128);
+	DEF_COLOR(LightGray, 216, 216, 216);
+	DEF_COLOR(White, 255, 255, 255);
 };
 
 
@@ -96,6 +121,9 @@ typedef Vector3<float> Vector3f;
 typedef Vector3<int32_t> Vector3i;
 typedef Vector3<uint32_t> Vector3u;
 
+
+typedef Vector<float, 2> FloatPoint;
+typedef Vector<int32_t, 2> IntPoint;
 
 
 
